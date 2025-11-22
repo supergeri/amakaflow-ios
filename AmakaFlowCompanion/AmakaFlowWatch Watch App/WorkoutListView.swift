@@ -167,7 +167,7 @@ struct WatchIntervalRow: View {
         case .warmup: return "Warm Up"
         case .cooldown: return "Cool Down"
         case .time(_, let target): return target ?? "Work"
-        case .reps(_, let name, _, _): return name
+        case .reps(_, let name, _, _, _): return name
         case .distance: return "Run"
         case .repeat(let reps, _): return "Repeat \(reps)x"
         }
@@ -177,7 +177,7 @@ struct WatchIntervalRow: View {
         switch interval {
         case .warmup(let seconds, _), .cooldown(let seconds, _), .time(let seconds, _):
             return WorkoutHelpers.formatDuration(seconds: seconds)
-        case .reps(let reps, _, _, _):
+        case .reps(let reps, _, _, _, _):
             return "\(reps) reps"
         case .distance(let meters, _):
             return WorkoutHelpers.formatDistance(meters: meters)
