@@ -103,7 +103,7 @@ class WorkoutKitConverter {
             )
             return .step(step)
             
-        case .reps(let reps, let name, let load, let restSec):
+        case .reps(let reps, let name, let load, let restSec, _):
             let wkLoad = convertLoad(load)
             let step = WKPlanDTO.Interval.Step(
                 kind: "reps",

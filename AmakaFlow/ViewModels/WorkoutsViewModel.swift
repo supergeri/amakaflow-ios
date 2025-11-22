@@ -83,13 +83,13 @@ class WorkoutsViewModel: ObservableObject {
             duration: 1890,
             intervals: [
                 .warmup(seconds: 300, target: nil),
-                .reps(reps: 8, name: "Squat", load: "80% 1RM", restSec: 90),
-                .reps(reps: 8, name: "Bench Press", load: nil, restSec: 90),
-                .reps(reps: 8, name: "Romanian Deadlift", load: nil, restSec: 90),
+                .reps(reps: 8, name: "Squat", load: "80% 1RM", restSec: 90, followAlongUrl: nil),
+                .reps(reps: 8, name: "Bench Press", load: nil, restSec: 90, followAlongUrl: nil),
+                .reps(reps: 8, name: "Romanian Deadlift", load: nil, restSec: 90, followAlongUrl: nil),
                 .repeat(reps: 3, intervals: [
-                    .reps(reps: 10, name: "Dumbbell Row", load: nil, restSec: 60),
+                    .reps(reps: 10, name: "Dumbbell Row", load: nil, restSec: 60, followAlongUrl: nil),
                     .time(seconds: 60, target: nil),
-                    .reps(reps: 12, name: "Push Up", load: nil, restSec: nil)
+                    .reps(reps: 12, name: "Push Up", load: nil, restSec: nil, followAlongUrl: nil)
                 ]),
                 .cooldown(seconds: 300, target: nil)
             ],
@@ -118,13 +118,13 @@ class WorkoutsViewModel: ObservableObject {
                     duration: 1890,
                     intervals: [
                         .warmup(seconds: 300, target: nil),
-                        .reps(reps: 8, name: "Squat", load: nil, restSec: 90),
-                        .reps(reps: 8, name: "Bench Press", load: nil, restSec: 90),
-                        .reps(reps: 8, name: "Romanian Deadlift", load: nil, restSec: 90),
+                        .reps(reps: 8, name: "Squat", load: nil, restSec: 90, followAlongUrl: nil),
+                        .reps(reps: 8, name: "Bench Press", load: nil, restSec: 90, followAlongUrl: nil),
+                        .reps(reps: 8, name: "Romanian Deadlift", load: nil, restSec: 90, followAlongUrl: nil),
                         .repeat(reps: 3, intervals: [
-                            .reps(reps: 10, name: "Dumbbell Row", load: nil, restSec: 60),
+                            .reps(reps: 10, name: "Dumbbell Row", load: nil, restSec: 60, followAlongUrl: nil),
                             .time(seconds: 60, target: nil),
-                            .reps(reps: 12, name: "Push Up", load: nil, restSec: nil)
+                            .reps(reps: 12, name: "Push Up", load: nil, restSec: nil, followAlongUrl: nil)
                         ]),
                         .cooldown(seconds: 300, target: nil)
                     ],
@@ -161,14 +161,14 @@ class WorkoutsViewModel: ObservableObject {
                     duration: 2280,
                     intervals: [
                         .repeat(reps: 4, intervals: [
-                            .reps(reps: 6, name: "Bench Press", load: nil, restSec: 120),
+                            .reps(reps: 6, name: "Bench Press", load: nil, restSec: 120, followAlongUrl: nil),
                             .time(seconds: 120, target: nil),
-                            .reps(reps: 8, name: "Overhead Press", load: nil, restSec: 90)
+                            .reps(reps: 8, name: "Overhead Press", load: nil, restSec: 90, followAlongUrl: nil)
                         ]),
                         .repeat(reps: 3, intervals: [
-                            .reps(reps: 10, name: "Incline Dumbbell Press", load: nil, restSec: 60),
+                            .reps(reps: 10, name: "Incline Dumbbell Press", load: nil, restSec: 60, followAlongUrl: nil),
                             .time(seconds: 60, target: nil),
-                            .reps(reps: 12, name: "Tricep Dips", load: nil, restSec: nil)
+                            .reps(reps: 12, name: "Tricep Dips", load: nil, restSec: nil, followAlongUrl: nil)
                         ])
                     ],
                     description: "Focus on chest, shoulders, and triceps",
@@ -178,6 +178,30 @@ class WorkoutsViewModel: ObservableObject {
                 scheduledDate: Calendar.current.date(byAdding: .day, value: 3, to: Date()),
                 scheduledTime: "18:00",
                 syncedToApple: true
+            ),
+            
+            // HIIT Follow-Along Workout with Instagram links
+            ScheduledWorkout(
+                workout: Workout(
+                    name: "HIIT Follow-Along Workout",
+                    sport: .strength,
+                    duration: 1800,
+                    intervals: [
+                        .warmup(seconds: 300, target: nil),
+                        .reps(reps: 20, name: "Jumping Jacks", load: nil, restSec: 30, followAlongUrl: "https://www.instagram.com/"),
+                        .reps(reps: 15, name: "Burpees", load: nil, restSec: 30, followAlongUrl: "https://www.instagram.com/"),
+                        .reps(reps: 30, name: "Mountain Climbers", load: nil, restSec: 30, followAlongUrl: "https://www.instagram.com/"),
+                        .reps(reps: 20, name: "High Knees", load: nil, restSec: 30, followAlongUrl: "https://www.instagram.com/"),
+                        .reps(reps: 10, name: "Push-ups", load: nil, restSec: 30, followAlongUrl: "https://www.instagram.com/"),
+                        .cooldown(seconds: 300, target: nil)
+                    ],
+                    description: "Follow-along HIIT workout with video links for each exercise",
+                    source: .instagram,
+                    sourceUrl: "https://www.instagram.com/"
+                ),
+                scheduledDate: Calendar.current.date(byAdding: .day, value: 0, to: Date()),
+                scheduledTime: "10:00",
+                syncedToApple: false
             )
         ]
         
@@ -205,11 +229,11 @@ class WorkoutsViewModel: ObservableObject {
                 intervals: [
                     .warmup(seconds: 180, target: nil),
                     .distance(meters: 1000, target: nil),
-                    .reps(reps: 100, name: "Wall Ball", load: nil, restSec: nil),
+                    .reps(reps: 100, name: "Wall Ball", load: nil, restSec: nil, followAlongUrl: nil),
                     .distance(meters: 100, target: nil),
-                    .reps(reps: 80, name: "Walking Lunge", load: nil, restSec: nil),
+                    .reps(reps: 80, name: "Walking Lunge", load: nil, restSec: nil, followAlongUrl: nil),
                     .distance(meters: 100, target: nil),
-                    .reps(reps: 100, name: "Burpee Broad Jump", load: nil, restSec: nil),
+                    .reps(reps: 100, name: "Burpee Broad Jump", load: nil, restSec: nil, followAlongUrl: nil),
                     .distance(meters: 1000, target: nil),
                     .cooldown(seconds: 300, target: nil)
                 ],
@@ -229,6 +253,25 @@ class WorkoutsViewModel: ObservableObject {
                 ],
                 description: "Gentle flow for active recovery",
                 source: .ai
+            ),
+            
+            // Mock Follow-Along Workout with Instagram links
+            Workout(
+                name: "HIIT Follow-Along Workout",
+                sport: .strength,
+                duration: 1800,
+                intervals: [
+                    .warmup(seconds: 300, target: nil),
+                    .reps(reps: 20, name: "Jumping Jacks", load: nil, restSec: 30, followAlongUrl: "https://www.instagram.com/"),
+                    .reps(reps: 15, name: "Burpees", load: nil, restSec: 30, followAlongUrl: "https://www.instagram.com/"),
+                    .reps(reps: 30, name: "Mountain Climbers", load: nil, restSec: 30, followAlongUrl: "https://www.instagram.com/"),
+                    .reps(reps: 20, name: "High Knees", load: nil, restSec: 30, followAlongUrl: "https://www.instagram.com/"),
+                    .reps(reps: 10, name: "Push-ups", load: nil, restSec: 30, followAlongUrl: "https://www.instagram.com/"),
+                    .cooldown(seconds: 300, target: nil)
+                ],
+                description: "Follow-along HIIT workout with video links for each exercise",
+                source: .instagram,
+                sourceUrl: "https://www.instagram.com/"
             )
         ]
     }

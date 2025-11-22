@@ -18,13 +18,13 @@ extension WorkoutDetailViewTests {
             duration: 1890, // 31.5 minutes
             intervals: [
                 .warmup(seconds: 300, target: nil),
-                .reps(reps: 8, name: "Squat", load: "80% 1RM", restSec: 90),
-                .reps(reps: 8, name: "Bench Press", load: nil, restSec: 90),
-                .reps(reps: 8, name: "Romanian Deadlift", load: nil, restSec: 90),
+                .reps(reps: 8, name: "Squat", load: "80% 1RM", restSec: 90, followAlongUrl: nil),
+                .reps(reps: 8, name: "Bench Press", load: nil, restSec: 90, followAlongUrl: nil),
+                .reps(reps: 8, name: "Romanian Deadlift", load: nil, restSec: 90, followAlongUrl: nil),
                 .repeat(reps: 3, intervals: [
-                    .reps(reps: 10, name: "Dumbbell Row", load: nil, restSec: 60),
+                    .reps(reps: 10, name: "Dumbbell Row", load: nil, restSec: 60, followAlongUrl: nil),
                     .time(seconds: 60, target: nil),
-                    .reps(reps: 12, name: "Push Up", load: nil, restSec: nil)
+                    .reps(reps: 12, name: "Push Up", load: nil, restSec: nil, followAlongUrl: nil)
                 ]),
                 .cooldown(seconds: 300, target: nil)
             ],
@@ -105,9 +105,9 @@ extension WorkoutDetailViewTests {
     
     @Test("WorkoutInterval - reps creates correctly")
     func testRepsInterval() {
-        let interval = WorkoutInterval.reps(reps: 8, name: "Squat", load: "80% 1RM", restSec: 90)
+        let interval = WorkoutInterval.reps(reps: 8, name: "Squat", load: "80% 1RM", restSec: 90, followAlongUrl: nil)
         
-        if case .reps(let reps, let name, let load, let restSec) = interval {
+        if case .reps(let reps, let name, let load, let restSec, _) = interval {
             #expect(reps == 8)
             #expect(name == "Squat")
             #expect(load == "80% 1RM")
@@ -120,7 +120,7 @@ extension WorkoutDetailViewTests {
     @Test("WorkoutInterval - repeat creates correctly")
     func testRepeatInterval() {
         let nested: [WorkoutInterval] = [
-            .reps(reps: 10, name: "Push Up", load: nil, restSec: 60)
+            .reps(reps: 10, name: "Push Up", load: nil, restSec: 60, followAlongUrl: nil)
         ]
         let interval = WorkoutInterval.repeat(reps: 3, intervals: nested)
         
@@ -261,7 +261,7 @@ extension WorkoutDetailViewTests {
     
     @Test("IntervalRow - intervalIcon returns correct icon for reps")
     func testIntervalIconReps() {
-        let interval = WorkoutInterval.reps(reps: 8, name: "Squat", load: nil, restSec: 90)
+        let interval = WorkoutInterval.reps(reps: 8, name: "Squat", load: nil, restSec: 90, followAlongUrl: nil)
         
         if case .reps = interval {
             #expect(true) // Reps interval created correctly
@@ -273,7 +273,7 @@ extension WorkoutDetailViewTests {
     @Test("IntervalRow - intervalIcon returns correct icon for repeat")
     func testIntervalIconRepeat() {
         let interval = WorkoutInterval.repeat(reps: 3, intervals: [
-            .reps(reps: 10, name: "Push Up", load: nil, restSec: 60)
+            .reps(reps: 10, name: "Push Up", load: nil, restSec: 60, followAlongUrl: nil)
         ])
         
         if case .repeat = interval {
@@ -363,7 +363,7 @@ extension WorkoutDetailViewTests {
     func testWorkoutManyIntervals() {
         var intervals: [WorkoutInterval] = []
         for i in 1...50 {
-            intervals.append(.reps(reps: 10, name: "Exercise \(i)", load: nil, restSec: 60))
+            intervals.append(.reps(reps: 10, name: "Exercise \(i)", load: nil, restSec: 60, followAlongUrl: nil))
         }
         
         let workout = Workout(
@@ -382,9 +382,9 @@ extension WorkoutDetailViewTests {
     @Test("WorkoutDetailView - handles nested repeat intervals")
     func testNestedRepeatIntervals() {
         let nested: [WorkoutInterval] = [
-            .reps(reps: 10, name: "Exercise 1", load: nil, restSec: 60),
+            .reps(reps: 10, name: "Exercise 1", load: nil, restSec: 60, followAlongUrl: nil),
             .time(seconds: 60, target: nil),
-            .reps(reps: 12, name: "Exercise 2", load: nil, restSec: nil)
+            .reps(reps: 12, name: "Exercise 2", load: nil, restSec: nil, followAlongUrl: nil)
         ]
         
         let repeatInterval = WorkoutInterval.repeat(reps: 3, intervals: nested)
@@ -394,7 +394,7 @@ extension WorkoutDetailViewTests {
             #expect(intervals.count == 3)
             
             // Check first nested interval
-            if case .reps(let nestedReps, let name, _, _) = intervals[0] {
+            if case .reps(let nestedReps, let name, _, _, _) = intervals[0] {
                 #expect(nestedReps == 10)
                 #expect(name == "Exercise 1")
             } else {
@@ -419,7 +419,7 @@ extension WorkoutDetailViewTests {
             switch interval {
             case .warmup(let sec, _), .cooldown(let sec, _), .time(let sec, _):
                 calculatedDuration += sec
-            case .reps(_, _, _, let restSec):
+            case .reps(_, _, _, let restSec, _):
                 calculatedDuration += restSec ?? 0
             case .distance:
                 break // Distance doesn't contribute to time-based duration
@@ -428,7 +428,7 @@ extension WorkoutDetailViewTests {
                     switch nested {
                     case .warmup(let sec, _), .cooldown(let sec, _), .time(let sec, _):
                         calculatedDuration += sec * reps
-                    case .reps(_, _, _, let restSec):
+                    case .reps(_, _, _, let restSec, _):
                         calculatedDuration += (restSec ?? 0) * reps
                     default:
                         break

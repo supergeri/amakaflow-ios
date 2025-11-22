@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct IntervalRow: View {
     let interval: WorkoutInterval
@@ -47,19 +48,34 @@ struct IntervalRow: View {
                     .frame(height: 20)
                     
                     // Additional Details
-                    if let details = intervalDetails {
-                        Text(details)
-                            .font(Theme.Typography.caption)
-                            .foregroundColor(Theme.Colors.textSecondary)
-                            .padding(.leading, 22)
-                            .frame(height: 16)
-                    } else {
-                        // Placeholder to maintain consistent height
-                        Text("")
-                            .font(Theme.Typography.caption)
-                            .frame(height: 16)
-                            .opacity(0)
+                    HStack(spacing: 8) {
+                        if let details = intervalDetails {
+                            Text(details)
+                                .font(Theme.Typography.caption)
+                                .foregroundColor(Theme.Colors.textSecondary)
+                        }
+                        
+                        // Follow-Along Link Button
+                        if let followAlongUrl = getFollowAlongUrl() {
+                            Button(action: {
+                                openInstagram(followAlongUrl: followAlongUrl)
+                            }) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "play.rectangle.fill")
+                                        .font(.system(size: 12))
+                                    Text("Watch")
+                                        .font(Theme.Typography.caption)
+                                }
+                                .foregroundColor(Theme.Colors.accentBlue)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Theme.Colors.accentBlue.opacity(0.1))
+                                .cornerRadius(6)
+                            }
+                        }
                     }
+                    .padding(.leading, 22)
+                    .frame(height: 16, alignment: .leading)
                     
                     // Nested Intervals (for repeat type)
                     if case .repeat(_, let intervals) = interval {
@@ -85,6 +101,29 @@ struct IntervalRow: View {
                     .background(Theme.Colors.borderLight)
                     .padding(.leading, 60)
             }
+        }
+    }
+    
+    // MARK: - Helper Functions
+    private func getFollowAlongUrl() -> String? {
+        if case .reps(_, _, _, _, let followAlongUrl) = interval {
+            return followAlongUrl
+        }
+        return nil
+    }
+    
+    private func openInstagram(followAlongUrl: String) {
+        // Try to open Instagram app first, fallback to web
+        let instagramAppUrl = "instagram://"
+        let instagramWebUrl = followAlongUrl
+        
+        if let appUrl = URL(string: instagramAppUrl),
+           UIApplication.shared.canOpenURL(appUrl) {
+            // Open Instagram app
+            UIApplication.shared.open(appUrl)
+        } else if let webUrl = URL(string: instagramWebUrl) {
+            // Open in Safari
+            UIApplication.shared.open(webUrl)
         }
     }
     
@@ -117,7 +156,7 @@ struct IntervalRow: View {
         case .cooldown: return "Cool Down"
         case .time(_, let target):
             return target ?? "Work"
-        case .reps(_, let name, _, _):
+        case .reps(_, let name, _, _, _):
             return name
         case .distance:
             return "Run"
@@ -130,7 +169,7 @@ struct IntervalRow: View {
         switch interval {
         case .warmup(let seconds, _), .cooldown(let seconds, _), .time(let seconds, _):
             return WorkoutHelpers.formatDuration(seconds: seconds)
-        case .reps(let reps, _, _, _):
+        case .reps(let reps, _, _, _, _):
             return "\(reps) reps"
         case .distance(let meters, _):
             return WorkoutHelpers.formatDistance(meters: meters)
@@ -140,7 +179,7 @@ struct IntervalRow: View {
                 switch interval {
                 case .warmup(let s, _), .cooldown(let s, _), .time(let s, _):
                     return total + s
-                case .reps(_, _, _, let rest):
+                case .reps(_, _, _, let rest, _):
                     return total + (rest ?? 0)
                 default:
                     return total
@@ -154,7 +193,7 @@ struct IntervalRow: View {
         switch interval {
         case .warmup(_, let target), .cooldown(_, let target), .time(_, let target), .distance(_, let target):
             return target
-        case .reps(_, _, let load, let restSec):
+        case .reps(_, _, let load, let restSec, _):
             var details: [String] = []
             if let load = load {
                 details.append("Load: \(load)")
@@ -202,7 +241,7 @@ struct NestedIntervalRow: View {
         case .warmup: return "Warm Up"
         case .cooldown: return "Cool Down"
         case .time(_, let target): return target ?? "Work"
-        case .reps(_, let name, _, _): return name
+        case .reps(_, let name, _, _, _): return name
         case .distance: return "Run"
         case .repeat: return "Repeat"
         }
@@ -212,7 +251,7 @@ struct NestedIntervalRow: View {
         switch interval {
         case .warmup(let seconds, _), .cooldown(let seconds, _), .time(let seconds, _):
             return WorkoutHelpers.formatDuration(seconds: seconds)
-        case .reps(let reps, _, _, _):
+        case .reps(let reps, _, _, _, _):
             return "\(reps) reps"
         case .distance(let meters, _):
             return WorkoutHelpers.formatDistance(meters: meters)
@@ -231,14 +270,14 @@ struct NestedIntervalRow: View {
         )
         
         IntervalRow(
-            interval: .reps(reps: 8, name: "Squat", load: "80% 1RM", restSec: 90),
+            interval: .reps(reps: 8, name: "Squat", load: "80% 1RM", restSec: 90, followAlongUrl: nil),
             stepNumber: 2,
             isLast: false
         )
         
         IntervalRow(
             interval: .repeat(reps: 3, intervals: [
-                .reps(reps: 10, name: "Push Up", load: nil, restSec: 60),
+                .reps(reps: 10, name: "Push Up", load: nil, restSec: 60, followAlongUrl: nil),
                 .time(seconds: 60, target: "Rest")
             ]),
             stepNumber: 3,
