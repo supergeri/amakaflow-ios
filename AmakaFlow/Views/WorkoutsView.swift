@@ -90,7 +90,7 @@ struct WorkoutsView: View {
                             }
                             .padding(.horizontal, Theme.Spacing.lg)
                         }
-                        .padding(.bottom, 100) // Bottom nav spacing
+                        .padding(.bottom, Theme.Spacing.lg)
                     }
                 }
             }

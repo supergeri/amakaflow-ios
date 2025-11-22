@@ -2,16 +2,19 @@
 //  AmakaFlowWatchApp.swift
 //  AmakaFlowWatch Watch App
 //
-//  Created by DAVID ANDREWS on 11/21/25.
+//  Main entry point for AmakaFlowWatch Watch App
 //
 
 import SwiftUI
 
-// @main - Removed: This is a duplicate file. Use AmakaFlowWatchApp.swift (the one with WatchWorkoutManager) instead.
-// struct AmakaFlowWatch_Watch_AppApp: App {
-//     var body: some Scene {
-//         WindowGroup {
-//             ContentView()
-//         }
-//     }
-// }
+@main
+struct AmakaFlowWatchApp: App {
+    @StateObject private var workoutManager = WatchWorkoutManager()
+    
+    var body: some Scene {
+        WindowGroup {
+            WorkoutListView()
+                .environmentObject(workoutManager)
+        }
+    }
+}

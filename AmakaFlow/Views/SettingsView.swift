@@ -148,7 +148,7 @@ struct SettingsView: View {
                         }
                         .padding(.horizontal, Theme.Spacing.lg)
                         .padding(.top, Theme.Spacing.md)
-                        .padding(.bottom, 100)
+                        .padding(.bottom, Theme.Spacing.lg)
                     }
                     .padding(.top, Theme.Spacing.md)
                 }
